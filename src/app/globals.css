@@ -142,6 +142,12 @@ body {
   transform: translateZ(0);
 }
 
+/* Let the browser skip layout/paint for off-screen sections while scrolling */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100vh;
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

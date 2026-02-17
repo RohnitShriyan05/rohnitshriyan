@@ -19,7 +19,7 @@ function useLerpedMouse() {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
@@ -29,6 +29,22 @@ function useLerpedMouse() {
   });
 
   return lerped;
+}
+
+// Pauses the R3F render loop when the section is off-screen
+function FrameloopController({ visible }: { visible: boolean }) {
+  const { set, invalidate } = useThree(({ set, invalidate }) => ({ set, invalidate }));
+
+  useEffect(() => {
+    if (visible) {
+      set({ frameloop: "always" });
+      invalidate();
+    } else {
+      set({ frameloop: "never" });
+    }
+  }, [visible, set, invalidate]);
+
+  return null;
 }
 
 function ChromeGlassShape() {
@@ -80,9 +96,10 @@ function ChromeGlassShape() {
   );
 }
 
-function Scene() {
+function HeroScene({ visible }: { visible: boolean }) {
   return (
     <>
+      <FrameloopController visible={visible} />
       <color attach="background" args={["#050505"]} />
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
@@ -97,6 +114,21 @@ function Scene() {
 
 export function HeroLiquid() {
   const [latency, setLatency] = useState(42);
+  const [isVisible, setIsVisible] = useState(true);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Pause 3D rendering when section is off-screen
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "200px 0px" } // start rendering 200px before it scrolls into view
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Simulate fluctuating latency counter (throttled to reduce re-renders)
   useEffect(() => {
@@ -107,7 +139,7 @@ export function HeroLiquid() {
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-background">
+    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-background">
       {/* 3D Canvas */}
       <div className="absolute inset-0 z-0">
         <Canvas
@@ -119,7 +151,7 @@ export function HeroLiquid() {
             powerPreference: "high-performance" 
           }}
         >
-          <Scene />
+          <HeroScene visible={isVisible} />
         </Canvas>
       </div>
 
