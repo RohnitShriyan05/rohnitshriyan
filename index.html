@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohnit Shriyan | Software Engg</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --secondary: #a78bfa;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(
+                135deg,
+                rgba(15, 23, 42, 0.98) 0%,
+                rgba(2, 6, 23, 0.98) 100%
+            ), url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.4"/></svg>');
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                background: rgba(15, 23, 42, 0.95);
+                backdrop-filter: blur(15px);
+                width: 100%;
+                text-align: center;
+                padding: 2rem 0;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                padding: 1rem;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .social-links a {
+            color: var(--light);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            padding: 12px;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        /* Sections */
+        .section {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.5s ease;
+        }
+
+        .section:hover .section-title::after {
+            width: 100%;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 1.25rem;
+        }
+
+        .card li {
+            margin: 0.75rem 0;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .card li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tech-item {
+            background: rgba(124, 58, 237, 0.08);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-category {
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.05);
+        }
+
+        .skill-category h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .skill-category i {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1.25rem 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Rohnit S</div>
+            <ul class="nav-links">
+                <li><a href="#education" class="nav-link">Education</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+            </ul>
+            <button class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Rohnit Shriyan</h1>
+            <p class="subtitle">Fullstack Software Developer</p>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/RohnitShriyan05" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:rohnitshriyan23@gmail.com"><i class="fas fa-envelope"></i></a>
+            </div>
+        </section>
+
+        <section id="education" class="section">
+            <h2 class="section-title">Education</h2>
+            <div class="card">
+                <h3>Manipal Institute of Technology</h3>
+                <p>B.Tech in Computer Science & Engineering (AI)<br>
+                Expected Graduation: 2027</p>
+            </div>
+        </section>
+
+        <section id="experience" class="section">
+            <h2 class="section-title">Experience</h2>
+            <div class="card">
+                <h3>Qrossway - Fullstack Engineer</h3>
+                <ul>
+                    <li>Built property management platform handling 500+ daily users</li>
+                    <li>Reduced unauthorized access by 40% via JWT authentication</li>
+                    <li>Designed analytics dashboards using MongoDB aggregations</li>
+                    <li>Deployed scalable AWS infrastructure with 99.9% uptime</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">AWS</span>
+                    <span class="tech-item">MongoDB</span>
+                    <span class="tech-item">Node.js</span>
+                    <span class="tech-item">JWT</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <h2 class="section-title">Projects</h2>
+            
+            <!-- Existing Projects -->
+            <div class="card">
+                <h3>AI-Powered Learning Assistant</h3>
+                <ul>
+                    <li>CNN model with 92% accuracy for attention detection</li>
+                    <li>Automated lecture summaries reducing review time by 30%</li>
+                    <li>Dyslexia-friendly UI components</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Python</span>
+                    <span class="tech-item">PyTorch</span>
+                    <span class="tech-item">Flask</span>
+                    <span class="tech-item">OpenCV</span>
+                </div>
+            </div>
+        
+            <div class="card">
+                <h3>Research Collaboration Platform</h3>
+                <ul>
+                    <li>Professor-student matching system for 100+ users</li>
+                    <li>85% accuracy recommendation engine</li>
+                    <li>WebSocket-based chat integration</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Next.js</span>
+                    <span class="tech-item">WebSocket</span>
+                    <span class="tech-item">AWS</span>
+                    <span class="tech-item">PostgreSQL</span>
+                </div>
+            </div>
+        
+            <!-- New Projects -->
+            <div class="card">
+                <h3><a href="https://juschat-nextjs.vercel.app" target="_blank" rel="noopener noreferrer">Juschat Discord Clone</a></h3>
+                <ul>
+                    <li>Real-time social media platform inspired by Discord</li>
+                    <li>WebSocket-based real-time communication channels</li>
+                    <li>Multi-user chat with message persistence</li>
+                    <li>User authentication and authorization system</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">Next.js</span>
+                    <span class="tech-item">WebSocket</span>
+                    <span class="tech-item">Node.js</span>
+                    <span class="tech-item">MongoDB</span>
+                </div>
+            </div>
+        
+            <div class="card">
+                <h3><a href="https://rohnitshriyan05.github.io/shortestpath/" target="_blank" rel="noopener noreferrer">Shortest Path Visualizer</a></h3>
+                <ul>
+                    <li>Interactive visualization of Dijkstra's and A* algorithms</li>
+                    <li>Custom grid creation with obstacle placement</li>
+                    <li>Step-by-step algorithm visualization</li>
+                    <li>Educational tool for algorithm understanding</li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-item">JavaScript</span>
+                    <span class="tech-item">HTML5</span>
+                    <span class="tech-item">CSS3</span>
+                    <span class="tech-item">Algorithms</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3><i class="fas fa-code"></i>Languages</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Python</span>
+                        <span class="tech-item">C++</span>
+                        <span class="tech-item">Java</span>
+                        <span class="tech-item">JavaScript/TypeScript</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-layer-group"></i>Frontend</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">React</span>
+                        <span class="tech-item">Next.js</span>
+                        <span class="tech-item">Tailwind CSS</span>
+                        <span class="tech-item">WebSocket</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-server"></i>Backend</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Node.js</span>
+                        <span class="tech-item">Express.js</span>
+                        <span class="tech-item">REST API</span>
+                        <span class="tech-item">Flask</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-database"></i>Databases</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">MongoDB</span>
+                        <span class="tech-item">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-cloud"></i>DevOps</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">AWS</span>
+                        <span class="tech-item">Docker</span>
+                        <span class="tech-item">NGINX</span>
+                        <span class="tech-item">CI/CD</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i class="fas fa-robot"></i>AI/ML</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">PyTorch</span>
+                        <span class="tech-item">OpenCV</span>
+                        <span class="tech-item">Pandas</span>
+                        <span class="tech-item">NumPy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Navbar Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Active Section Highlight
+        const sections = document.querySelectorAll('.section');
+        const navLinksArray = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinksArray.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                entry.target.classList.toggle('visible', entry.isIntersecting);
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.section').forEach((section) => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
