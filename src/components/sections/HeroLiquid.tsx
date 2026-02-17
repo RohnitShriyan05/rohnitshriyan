@@ -58,12 +58,12 @@ function ChromeGlassShape() {
       floatIntensity={0.3}
     >
       <mesh ref={meshRef} scale={1.8}>
-        <torusKnotGeometry args={[1, 0.35, 200, 32, 2, 3]} />
+        <torusKnotGeometry args={[1, 0.35, 100, 16, 2, 3]} />
         <MeshTransmissionMaterial
           backside
           backsideThickness={0.3}
-          samples={16}
-          resolution={1024}
+          samples={4}
+          resolution={512}
           transmission={1}
           roughness={0.0}
           thickness={0.5}
@@ -98,11 +98,11 @@ function Scene() {
 export function HeroLiquid() {
   const [latency, setLatency] = useState(42);
 
-  // Simulate fluctuating latency counter
+  // Simulate fluctuating latency counter (throttled to reduce re-renders)
   useEffect(() => {
     const interval = setInterval(() => {
       setLatency(Math.floor(Math.random() * 60) + 30);
-    }, 150);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -114,7 +114,7 @@ export function HeroLiquid() {
           camera={{ position: [0, 0, 8], fov: 45 }}
           dpr={[1, 1.5]}
           gl={{ 
-            antialias: true, 
+            antialias: false, 
             alpha: false,
             powerPreference: "high-performance" 
           }}
